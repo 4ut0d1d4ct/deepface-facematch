@@ -7,30 +7,30 @@ from sklearn.metrics.pairwise import cosine_similarity
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_subject_embedding(subjectPath, model_name='VGG-Face'):
+def get_subject_embedding(subjectPath, modelName='VGG-Face'):
     """
     Get the embedding for the subject image.
 
     Args:
         subjectPath (str): Path to the subject image.
-        model_name (str): Name of the model to use for embedding.
+        modelName (str): Name of the model to use for embedding.
 
     Returns:
         embedding: Embedding of the subject image.
     """
     try:
-        return DeepFace.represent(img_path=subjectPath, model_name=model_name)
+        return DeepFace.represent(img_path=subjectPath, model_name=modelName)
     except Exception as e:
         logger.error(f"Error getting embedding for subject image: {e}")
         return None
 
-def get_doubles_embeddings(doublesDir, model_name='VGG-Face'):
+def get_doubles_embeddings(doublesDir, modelName='VGG-Face'):
     """
     Get the embeddings for all images in the doubles directory.
 
     Args:
         doublesDir (str): Path to the doubles directory.
-        model_name (str): Name of the model to use for embedding.
+        modelName (str): Name of the model to use for embedding.
 
     Returns:
         embeddings: Dictionary of image filenames and their embeddings.
@@ -40,20 +40,20 @@ def get_doubles_embeddings(doublesDir, model_name='VGG-Face'):
         if filename.endswith(('.jpg', '.jpeg', '.png')):
             imagePath = os.path.join(doublesDir, filename)
             try:
-                embedding = DeepFace.represent(img_path=imagePath, model_name=model_name)[0]["embedding"]
+                embedding = DeepFace.represent(img_path=imagePath, model_name=modelName)[0]["embedding"]
                 embeddings[filename] = embedding
             except Exception as e:
                 logger.error(f"Error getting embedding for double image {filename}: {e}")
     return embeddings
 
-def main(subjectPath="data/subject/stock_twins_1.jpg", doublesPath="data/doubles", model_name='VGG-Face', verbose=True):
+def main(subjectPath="data/subject/stock_twins_1.jpg", doublesPath="data/doubles", modelName='VGG-Face', verbose=True):
     """
     Main function to get embeddings and calculate similarities.
 
     Args:
         subjectPath (str): Path to the subject image.
         doublesPath (str): Path to the doubles directory.
-        model_name (str): Name of the model to use for embedding.
+        modelName (str): Name of the model to use for embedding.
         verbose (bool): Whether to print verbose output.
 
     Returns:
@@ -61,13 +61,13 @@ def main(subjectPath="data/subject/stock_twins_1.jpg", doublesPath="data/doubles
     """
     if verbose:
         logger.info(f"Getting the embedding for the subject image: {subjectPath}")
-    subjectEmbedding = get_subject_embedding(subjectPath, model_name)
+    subjectEmbedding = get_subject_embedding(subjectPath, modelName)
     if subjectEmbedding is None:
         return []
 
     if verbose:
         logger.info(f"Getting the embeddings for the doubles images in: {doublesPath}")
-    doublesEmbeddings = get_doubles_embeddings(doublesPath, model_name)
+    doublesEmbeddings = get_doubles_embeddings(doublesPath, modelName)
 
     # Calculate similarities
     similarities = {}
@@ -91,10 +91,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DeepFace Face Match")
     parser.add_argument("--subjectPath", type=str, default="data/subject/stock_twins_1.jpg", help="Path to the subject image")
     parser.add_argument("--doublesPath", type=str, default="data/doubles", help="Path to the doubles directory")
-    parser.add_argument("--model_name", type=str, default="VGG-Face", help="Name of the model to use for embedding")
+    parser.add_argument("--modelName", type=str, default="VGG-Face", help="Name of the model to use for embedding")
     parser.add_argument("--verbose", action='store_true', help="Enable verbose output")
     parser.add_argument("--no-verbose", action='store_false', dest='verbose', help="Disable verbose output")
     parser.set_defaults(verbose=True)
-    
+
     args = parser.parse_args()
-    main(args.subjectPath, args.doublesPath, args.model_name, args.verbose)
+    main(args.subjectPath, args.doublesPath, args.modelName, args.verbose)

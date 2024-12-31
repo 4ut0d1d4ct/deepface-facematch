@@ -28,5 +28,5 @@ python3 -m main <args>
 
 Example usage with args:
 ```sh
-python3 -m main --subjectPath "path/to/subject.jpg" --doublesPath "path/to/doubles" --model_name "Facenet" --no-verbose
+python3 -m main --subjectPath "path/to/subject.jpg" --doublesPath "path/to/doubles" --modelName "Facenet" --no-verbose
 ```
